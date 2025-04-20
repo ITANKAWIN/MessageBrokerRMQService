@@ -50,30 +50,14 @@ builder.Services.AddMassTransit(x =>
 
         cfg.Message<ISendSMSMessage>(m =>
         {
-            m.SetEntityName(rmqOption.SmsQueue.ExchangeName); // "example-ex-1"
-            //m.SetEntityName("sms-exchange");
+            m.SetEntityName(rmqOption.SmsQueue.ExchangeName);
         });
 
         cfg.Publish<ISendSMSMessage>(p =>
         {
-            //p.BindQueue(rmqOption.ExchangeName, rmqOption.QueueName, cc =>
-            //{
-            //    cc.RoutingKey = rmqOption.RoutingKey;
-            //    cc.ExchangeType = ExchangeType.Topic;
-            //});
-
-            //p.BindQueue("message-exchange", "sms-queue", cc =>
-            //{
-            //    cc.RoutingKey = "message.*";
-            //    cc.ExchangeType = ExchangeType.Topic;
-            //    //cc.Durable = true;   
-            //});
-
             p.BindQueue(rmqOption.SmsQueue.ExchangeName, rmqOption.SmsQueue.QueueName, cc =>
-            //p.BindQueue("sms-exchange", "sms-queue", cc =>
             {
-                cc.RoutingKey = rmqOption.RoutingKey; // message.*
-                //cc.RoutingKey = "message.*"; // message.*
+                cc.RoutingKey = rmqOption.RoutingKey;
                 cc.ExchangeType = ExchangeType.Topic;
             });
 
@@ -87,7 +71,7 @@ builder.Services.AddMassTransit(x =>
 
         cfg.Publish<ISendNotiMessage>(p =>
         {
-            p.BindQueue(rmqOption.NotificationQueue.ExchangeName, rmqOption.NotificationQueue.QueueName, cc => // "example-ex-2", "example-queue-2"
+            p.BindQueue(rmqOption.NotificationQueue.ExchangeName, rmqOption.NotificationQueue.QueueName, cc =>
             {
                 cc.RoutingKey = rmqOption.RoutingKey;
                 cc.ExchangeType = ExchangeType.Topic;
@@ -114,6 +98,6 @@ if (!app.Environment.IsProduction())
 app.UseAuthorization();
 
 app.MapControllers();
-//app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/healthz");
 
 app.Run();

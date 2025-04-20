@@ -8,7 +8,7 @@
         public string Username { get; set; } = string.Empty;
         public string PWD { get; set; } = string.Empty;
         //public string ExchangeName { get; set; } = string.Empty;
-        public string QueueName { get; set; } = string.Empty;
+        //public string QueueName { get; set; } = string.Empty;
         public string RoutingKey { get; set; } = string.Empty;
         public SmsQueue SmsQueue { get; set; } = new SmsQueue();
         public NotificationQueue NotificationQueue { get; set; } = new NotificationQueue();

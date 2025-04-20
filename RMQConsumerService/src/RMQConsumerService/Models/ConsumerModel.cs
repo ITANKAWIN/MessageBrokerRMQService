@@ -2,18 +2,27 @@
 
 namespace RMQConsumerService.Models
 {
-    //public class MessageModel : IMessageModel
-    //{
-    //    public Guid correlationId { get; set; }
-    //    public string message { get; set; } = string.Empty;
-    //    public string systemName { get; set; } = string.Empty;
-    //    public string type { get; set; } = string.Empty;
-    //}
+    public class ReqestSMSEventModel : SendSMSMessage
+    {
+    }
 
-    //public class ReqestSendMessageModel
-    //{
-    //    public string mobileNumber { get; set; } = string.Empty;
-    //    public string message { get; set; } = string.Empty;
-    //    public string systemName { get; set; } = string.Empty;
-    //}
+    public class ReqestNotiEventModel : SendNotiMessage
+    {
+    }
+
+    public class SendSMSMessage : ISendSMSMessage
+    {
+        public string message { get; set; } = string.Empty;
+        public string mobileNumber { get; set; } = string.Empty;
+        public string systemName { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
+    }
+
+    public class SendNotiMessage : ISendNotiMessage
+    {
+        public string message { get; set; } = string.Empty;
+        public string deviceId { get; set; } = string.Empty;
+        public string systemName { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
+    }
 }
