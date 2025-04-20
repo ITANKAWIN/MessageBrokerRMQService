@@ -18,17 +18,17 @@ A simple .NET 9-based microservice that demonstrates how to publish messages to 
 This project uses a **Publisher** service that sends messages to a **Topic Exchange** in RabbitMQ. Two queues are bound to the exchange with distinct routing keys:
 
 ```
-                      +---------------------+
-                      | Publisher (.NET 9)  |
-                      +---------------------+
-                                |
-                                v
-                     +------------------------+
-                     | Exchange: topic type   |
-                     | Name: notification-ex  |
-                     +------------------------+
+                       +---------------------+
+                       | Publisher (.NET 9)  |
+                       +---------------------+
+                            |           |
+                            v           v
+     +------------------------+       +------------------------+
+     | Exchange: topic type   |       | Exchange: topic type   |
+     | Name: sms-ex           |       | Name: notification-ex  |
+     +------------------------+       +------------------------+
                       |                      |
-        RoutingKey: notification.sms   RoutingKey: notification.email
+        RoutingKey: message.sms         RoutingKey: message.noti
                       |                      |
                       v                      v
              +----------------+       +------------------+
