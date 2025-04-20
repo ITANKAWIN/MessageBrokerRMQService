@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  publisher:
+    image: ghcr.io/tanapoomjaisabay/publisherapi:latest
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=UAT
+      - TZ=Asia/Bangkok
+    depends_on:
+      - rabbitmq
+      
+  consumer:
+    image: ghcr.io/tanapoomjaisabay/consumerapi:latest
+    ports:
+      - "5004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=UAT
+      - TZ=Asia/Bangkok
+    depends_on:
+      - rabbitmq
