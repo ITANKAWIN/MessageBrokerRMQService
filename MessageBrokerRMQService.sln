@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMQPublisherService", "RMQPublisherService\src\RMQPublisherService\RMQPublisherService.csproj", "{8846D82D-B7F6-4830-93B2-B167AB3C1018}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RMQPublisherService", "RMQPublisherService", "{B9D58D1F-3904-47DE-A8DE-DEB8B196B01B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{83547CB7-F13D-4AB6-BD63-CD13662C3E35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RMQConsumerService", "RMQConsumerService", "{B36040EA-B462-42DC-B7B1-C9C740DB09A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{846832F0-1B49-405C-B8E5-28604A5924BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMQConsumerService", "RMQConsumerService\src\RMQConsumerService\RMQConsumerService.csproj", "{F49E8F39-B743-445E-AAE3-BF016D4F2068}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8846D82D-B7F6-4830-93B2-B167AB3C1018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8846D82D-B7F6-4830-93B2-B167AB3C1018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8846D82D-B7F6-4830-93B2-B167AB3C1018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8846D82D-B7F6-4830-93B2-B167AB3C1018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F49E8F39-B743-445E-AAE3-BF016D4F2068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F49E8F39-B743-445E-AAE3-BF016D4F2068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F49E8F39-B743-445E-AAE3-BF016D4F2068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F49E8F39-B743-445E-AAE3-BF016D4F2068}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8846D82D-B7F6-4830-93B2-B167AB3C1018} = {83547CB7-F13D-4AB6-BD63-CD13662C3E35}
+		{83547CB7-F13D-4AB6-BD63-CD13662C3E35} = {B9D58D1F-3904-47DE-A8DE-DEB8B196B01B}
+		{846832F0-1B49-405C-B8E5-28604A5924BB} = {B36040EA-B462-42DC-B7B1-C9C740DB09A6}
+		{F49E8F39-B743-445E-AAE3-BF016D4F2068} = {846832F0-1B49-405C-B8E5-28604A5924BB}
+	EndGlobalSection
+EndGlobal
