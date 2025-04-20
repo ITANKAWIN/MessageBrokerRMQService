@@ -1,6 +1,6 @@
 # MessageBrokerRMQService
 
-A simple .NET 9-based microservice that demonstrates how to publish messages to RabbitMQ using MassTransit. This service sends messages to two separate queues (`sms-queue` and `noti-queue`) using a shared topic exchange with different routing keys.
+A simple .NET 9-based microservice that demonstrates how to publish messages to RabbitMQ using MassTransit. This service sends messages to two separate queues (`sms-queue` and `noti-queue`) using a two topic exchange with different routing keys.
 
 ---
 
