@@ -1,123 +1,127 @@
-# MessageBrokerRMQService
 
-A simple .NET 9-based microservice that demonstrates how to publish messages to RabbitMQ using MassTransit. This service sends messages to two separate queues (`sms-queue` and `noti-queue`) using a two topic exchange with different routing keys.
+# MessageBrokerRMQService &nbsp;![.NET](https://img.shields.io/badge/.NET%209-512BD4?logo=dotnet&logoColor=white) ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-5C2D91?logo=dotnet&logoColor=white) ![MassTransit](https://img.shields.io/badge/MassTransit-2E9CDB) ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 
----
-
-## 🚀 Tech Stack
-
-- [.NET 9](https://dotnet.microsoft.com/)
-- [MassTransit](https://masstransit.io/)
-- [RabbitMQ](https://www.rabbitmq.com/)
-- ASP.NET Core
+> **Light‑weight demo** showing how to publish & consume two notification channels (**SMS / Push**) in RabbitMQ using **MassTransit** on .NET 9.
 
 ---
 
-## 📦 Architecture Overview
-
-This project uses a **Publisher** service that sends messages to a **Topic Exchange** in RabbitMQ. Two queues are bound to the exchange with distinct routing keys:
-
-```
-                       +---------------------+
-                       | Publisher (.NET 9)  |
-                       +---------------------+
-                            |           |
-                            v           v
-     +------------------------+       +------------------------+
-     | Exchange: topic type   |       | Exchange: topic type   |
-     | Name: sms-ex           |       | Name: notification-ex  |
-     +------------------------+       +------------------------+
-                      |                      |
-        RoutingKey: message.sms         RoutingKey: message.noti
-                      |                      |
-                      v                      v
-             +----------------+       +------------------+
-             |   sms-queue    |       |   noti-queue     |
-             +----------------+       +------------------+
-```
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-- [.NET 9 SDK](https://dotnet.microsoft.com/download)
-- [RabbitMQ Server](https://www.rabbitmq.com/download.html) (Docker or local install)
-
-### RabbitMQ with Docker
-
-```bash
-docker run -d --hostname rmq --name rmq-dev -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-```
-
-Login to RabbitMQ dashboard: [http://localhost:15672](http://localhost:15672)  
-(Default credentials: `guest` / `guest`)
-
-### Running the Project
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/tanapoomjaisabay/MessageBrokerRMQService.git
-cd MessageBrokerRMQService
-```
-
-2. Restore and run the project
-
-```bash
-dotnet restore
-dotnet run --project Publisher
-```
-
----
-
-## 📤 How It Works
-
-The publisher sends two types of messages:
-
-- **SMS Message** → routed with `notification.sms`
-- **Notification Message** → routed with `notification.email`
-
-Each message type is mapped to the same exchange (`notification-exchange`) but with different routing keys.
-
-```csharp
-await _publishEndpoint.Publish<SendSms>(new SendSms { ... }, context =>
-{
-    context.SetRoutingKey("notification.sms");
-});
-```
-
-```csharp
-await _publishEndpoint.Publish<SendNoti>(new SendNoti { ... }, context =>
-{
-    context.SetRoutingKey("notification.email");
-});
-```
+## ✨ Key Features
+| Area | Details |
+|------|---------|
+| **Two‑Channel Messaging** | Publishes `SendSMS` & `SendNoti` events to *different queues* via a single **topic exchange** |
+| **MassTransit Abstractions** | Strongly‑typed message contracts, retry, consumer configuration |
+| **Decoupled Services** | Independent *Publisher* & *Consumer* ASP.NET Core projects |
+| **Docker‑Ready** | `docker-compose.yml` spins up RabbitMQ + the two services |
+| **Health Probes** | `/api/healthcheck/status` endpoints for readiness checks |
 
 ---
 
 ## 🗂️ Project Structure
 
-```
-MessageBrokerRMQService/
-├── Models/               # Message definitions (SendSms, SendNoti)
-├── Services/             # PublisherService to publish messages
-├── Program.cs            # MassTransit + RabbitMQ configuration
-├── appsettings.json      # RabbitMQ connection options (if used)
+```mermaid
+flowchart LR
+    subgraph PublisherService
+        PCtrl[PublisherController] --> PService(PublisherService)
+    end
+    PService -- "Publish
+routingKey: notification.sms" --> RMQ(((RabbitMQ
+Topic Exchange)))
+    PService -- "Publish
+routingKey: notification.push" --> RMQ
+    RMQ --> SMSQ[sms-queue] --> SMSConsumer[[ConsumerService]]
+    RMQ --> NotiQ[noti-queue] --> NotiConsumer[[ConsumerService]]
 ```
 
 ---
 
-## 📌 Notes
+## 📚 REST Endpoints
 
-- Uses topic exchange for flexibility and scalability
-- RoutingKey-based queue binding
-- Easy to extend for additional queues and message types
+| Service | Verb | Path | Purpose |
+|---------|------|------|---------|
+| **Publisher** | `POST` | `/api/publisher/SendSMS` | Publish **SMS** message ➜ `sms-queue` |
+| **Publisher** | `POST` | `/api/publisher/SendNoti` | Publish **Push** notification ➜ `noti-queue` |
+| **Publisher** | `GET`  | `/api/healthcheck/status` | Liveness probe |
+| **Consumer**  | `GET`  | `/api/healthcheck/status` | Liveness probe |
+
+### 🔑 Sample Payloads
+
+<details>
+<summary><code>POST /api/publisher/SendSMS</code></summary>
+
+```json
+// request
+{
+  "userId": "b21d3cef-1d5e-4cfa-9bc5-bc1bffc364d5",
+  "mobileNumber": "0890000000",
+  "message": "Hello from demo 🚀",
+  "systemName": "DemoApi"
+}
+
+// response
+{
+  "status": 200,
+  "success": true,
+  "message": "Message published to sms-queue"
+}
+```
+</details>
+
+<details>
+<summary><code>POST /api/publisher/SendNoti</code></summary>
+
+```json
+// request
+{
+  "userId": "b21d3cef-1d5e-4cfa-9bc5-bc1bffc364d5",
+  "deviceId": "fcm:abc123",
+  "message": "You've got mail!",
+  "systemName": "DemoApi"
+}
+
+// response
+{
+  "status": 200,
+  "success": true,
+  "message": "Message published to noti-queue"
+}
+```
+</details>
 
 ---
 
-## 👨‍💻 Author
+## 🚀 Quick Start
 
-Created by [Tanapoom Jaisabay](https://github.com/tanapoomjaisabay)  
-Feel free to contribute or fork!
+```bash
+git clone https://github.com/tanapoomjaisabay/MessageBrokerRMQService.git
+cd MessageBrokerRMQService
+
+# spin up RabbitMQ + services
+docker compose -f infrastructure/docker/docker-compose.yml up -d
+```
+
+Open RabbitMQ UI **<http://localhost:15672>** or hit the Swagger UIs:
+
+* Publisher → <http://localhost:5003/swagger>  
+* Consumer → <http://localhost:5004/swagger>
+
+---
+
+## 🛠️ Tech Stack
+
+- **.NET 9** / **ASP.NET Core**  
+- **MassTransit 9.x**  
+- **RabbitMQ 3‑management**  
+- **Docker** & **GitHub Actions**  
+- **Serilog** structured logging  
+
+---
+
+## 🤝 Contributing
+
+PRs are welcome! Feel free to open issues, suggest refactors, or add new features.
+
+---
+
+## 📜 License
+
+Distributed under the **MIT** license. See `LICENSE` for more info.
