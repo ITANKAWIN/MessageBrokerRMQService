@@ -16,6 +16,16 @@
 
 ---
 
+## 🛠️ Tech Stack
+
+- **.NET 9** / **ASP.NET Core**  
+- **MassTransit**  
+- **RabbitMQ 3‑management**  
+- **Docker**  
+- **Serilog** structured logging  
+
+---
+
 ## 🗂️ Project Structure
 
 ```mermaid
@@ -103,16 +113,6 @@ Open RabbitMQ UI **<http://localhost:15672>** or hit the Swagger UIs:
 
 * Publisher → <http://localhost:5003/swagger>  
 * Consumer → <http://localhost:5004/swagger>
-
----
-
-## 🛠️ Tech Stack
-
-- **.NET 9** / **ASP.NET Core**  
-- **MassTransit 9.x**  
-- **RabbitMQ 3‑management**  
-- **Docker** & **GitHub Actions**  
-- **Serilog** structured logging  
 
 ---
 
