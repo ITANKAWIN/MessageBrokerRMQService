@@ -4,29 +4,56 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
 
-  publisher:
-    image: ghcr.io/tanapoomjaisabay/publisherapi:latest
-    ports:
-      - "5003:8080"
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
     environment:
-      - ASPNETCORE_ENVIRONMENT=UAT
-      - TZ=Asia/Bangkok
-    depends_on:
-      - rabbitmq
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # publisher:
+  #   image: ghcr.io/tanapoomjaisabay/publisherapi:latest
+  #   ports:
+  #     - "5003:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=UAT
+  #     - TZ=Asia/Bangkok
+  #   depends_on:
+  #     - rabbitmq
       
-  consumer:
-    image: ghcr.io/tanapoomjaisabay/consumerapi:latest
-    ports:
-      - "5004:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=UAT
-      - TZ=Asia/Bangkok
-    depends_on:
-      - rabbitmq
+  # consumer:
+  #   image: ghcr.io/tanapoomjaisabay/consumerapi:latest
+  #   ports:
+  #     - "5004:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=UAT
+  #     - TZ=Asia/Bangkok
+  #   depends_on:
+  #     - rabbitmq
+
+volumes:
+  mysql-data:
+  rabbitmq-data:
