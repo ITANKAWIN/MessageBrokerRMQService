@@ -1,13 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using RMQConsumerService.Data;
 using RMQConsumerService.Models;
 using RMQConsumerService.Services;
+using RMQConsumerService.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    )
+);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -28,6 +39,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddHealthChecks();
+
+// Configure bulk insert options
+builder.Services.Configure<BulkInsertOptions>(builder.Configuration.GetSection(BulkInsertOptions.SectionName));
+
+// Register bulk insert logging services
+builder.Services.AddScoped<ILogApplication, LogApplication>();
+// Alternative: Use enhanced version with retry logic and advanced features
+// builder.Services.AddScoped<ILogApplication, EnhancedLogApplication>();
+
+// Register message buffer service as singleton for shared buffer across consumers
+builder.Services.AddSingleton<IMessageBufferService, MessageBufferService>();
 
 builder.Services.Configure<RabbitMQOption>(builder.Configuration.GetSection("RabbitMQOption"));
 
